@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <vector>
 #include <fstream>
 
 using namespace std;
@@ -61,6 +62,12 @@ public:
             }
         }
     }
+};
+
+class Passenger {
+public:
+    string name;
+    vector <Record> personalRecords;
 };
 
 int main() {
