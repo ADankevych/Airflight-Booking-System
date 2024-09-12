@@ -5,14 +5,18 @@
 
 using namespace std;
 
-class Parser{
+class Record {
 public:
     string date;
     string flightNumber;
-    map<int, map<int,int>> rowColumnPrice;
+    map<int, map<int, int>> rowColumnPrice;
+};
 
+Record record;
+
+class Parser {
+public:
     static void parseRecord(){
-        Parser record;
         const char *path = "/Users/anastasia_d/CLionProjects/Airflight-Booking-System/records";
         fstream records(path);
         if (!records.is_open()) {
@@ -55,19 +59,8 @@ public:
                     record.rowColumnPrice[row][i] = price;
                 }
             }
-            cout << "Date: " << record.date << ", Flight Number: " << record.flightNumber << endl;
-
-            for (auto& rowColumnPrice : record.rowColumnPrice) {
-                cout << "Row: " << rowColumnPrice.first << endl;
-                for (auto& columnPrice : rowColumnPrice.second) {
-                    cout << "Column: " << columnPrice.first << ", Price: " << columnPrice.second << endl;
-                }
-            }
-            cout << endl;
         }
-
     }
-
 };
 
 int main() {
@@ -81,15 +74,8 @@ int main() {
     string option;
     getline(cin, option);
 
-    string newOption = "";
-
-    for (int i = 0; i < option.length(); i++){
-        if (option[i] != ' '){
-            newOption += option[i];
-        } else {
-            break;
-        }
-    }
+    size_t position = option.find(' ');
+    string newOption = option.substr(0, position);
 
     if (newOption == "check"){
         cout << "Enter the seat number: ";
