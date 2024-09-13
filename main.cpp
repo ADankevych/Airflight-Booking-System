@@ -117,7 +117,7 @@ public:
         int row = c - 'A' + 1;
         int column = stoi(rowColumn.substr(0, rowColumn.size() - 2 - name.size()));
 
-        if (recordsMap[date][flightNumber][row][column].available) {
+        if (recordsMap[date][flightNumber][row][column].available && recordsMap[date][flightNumber][row][column].price != 0) {
             recordsMap[date][flightNumber][row][column].available = false;
             recordsMap[date][flightNumber][row][column].name = name;
             recordsMap[date][flightNumber][row][column].ID = previousID + 1;
@@ -129,7 +129,7 @@ public:
             << recordsMap[date][flightNumber][row][column].price << "$" << ". Your seat is: " << column << " "
             << row << ". Your flight number is: " << flightNumber << ". Your flight date is: " << date << endl;
         } else {
-            cout << "The seat is already booked!" << endl;
+            cout << "The seat is not available!" << endl;
         }
     }
 
@@ -152,6 +152,64 @@ public:
                                  << row.first << ". Your flight number is: " << flight.first << ". Your flight date is: "
                                  << date.first << endl;
                             return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    void viewBookedTickets(string &option) {
+        size_t position = option.find(' ');
+        string optionType  = option.substr(0, position);
+        string lineRemainder = option.substr(position + 1 , option.size() - 1);
+
+        if (optionType == "username") {
+            for (auto &date : recordsMap) {
+                for (auto &flight : date.second) {
+                    for (auto &row : flight.second) {
+                        for (auto &column : row.second) {
+                            if (column.second.name == lineRemainder) {
+                                cout << "Your ticket ID is: " << column.second.ID << ". Your ticket price is: "
+                                     << column.second.price << "$" << ". Your seat is: " << column.first << " "
+                                     << row.first << ". Your flight number is: " << flight.first << ". Your flight date is: "
+                                     << date.first << endl;
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (optionType == "flight") {
+            for (auto &date : recordsMap) {
+                for (auto &flight : date.second) {
+                    if (flight.first == lineRemainder) {
+                        for (auto &row : flight.second) {
+                            for (auto &column : row.second) {
+                                if (column.second.name != "") {
+                                    cout << "Your ticket ID is: " << column.second.ID << ". Your ticket price is: "
+                                         << column.second.price << "$" << ". Your seat is: " << column.first << " "
+                                         << row.first << ". Your flight number is: " << flight.first
+                                         << ". Your flight date is: "
+                                         << date.first << endl;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            for (auto &date : recordsMap) {
+                for (auto &flight: date.second) {
+                    for (auto &row: flight.second) {
+                        for (auto &column: row.second) {
+                            if (column.second.ID == stoi(optionType)) {
+                                cout << "Your ticket ID is: " << column.second.ID << ". Your ticket price is: "
+                                     << column.second.price << "$" << ". Your seat is: " << column.first << " "
+                                     << row.first << ". Your flight number is: " << flight.first
+                                     << ". Your flight date is: "
+                                     << date.first << endl;
+                            }
                         }
                     }
                 }
@@ -213,7 +271,7 @@ int main() {
         } else if (newOption == "return") {
             Passenger().returnTicket(functionOption);
         } else if (newOption == "view") {
-            cout << "Enter the passenger name: ";
+            Passenger().viewBookedTickets(functionOption);
         } else if (newOption == "exit") {
             cout << "Goodbye!";
         } else {
