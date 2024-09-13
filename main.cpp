@@ -84,6 +84,8 @@ private:
 
 public:
 
+    Passenger() = default;
+
     explicit Passenger(string &name) {
         this->name = name;
     }
@@ -128,6 +130,32 @@ public:
             << row << ". Your flight number is: " << flightNumber << ". Your flight date is: " << date << endl;
         } else {
             cout << "The seat is already booked!" << endl;
+        }
+    }
+
+    void returnTicket(string &option) {
+        size_t position = option.find(' ');
+        int ID = stoi(option.substr(0, position));
+
+        for ( auto &date : recordsMap) {
+            for ( auto &flight : date.second) {
+                for (auto &row: flight.second) {
+                    for (auto &column: row.second) {
+                        if (column.second.ID == ID) {
+                            column.second.available = true;
+                            column.second.name = "";
+                            column.second.ID = 0;
+                            personalRecords[date.first][flight.first][row.first][column.first] = column.second;
+                            cout << "Ticket returned successfully!" << endl
+                                 << "Your ticket ID is: " << column.second.ID << ". Your ticket price is: "
+                                 << column.second.price << "$" << ". Your seat is: " << column.first << " "
+                                 << row.first << ". Your flight number is: " << flight.first << ". Your flight date is: "
+                                 << date.first << endl;
+                            return;
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -183,7 +211,7 @@ int main() {
             Passenger passenger(functionOption);
             passenger.bookTicket(functionOption);
         } else if (newOption == "return") {
-            cout << "Enter the passenger name: ";
+            Passenger().returnTicket(functionOption);
         } else if (newOption == "view") {
             cout << "Enter the passenger name: ";
         } else if (newOption == "exit") {
