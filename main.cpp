@@ -171,9 +171,10 @@ public:
                     for (auto &row : flight.second) {
                         for (auto &column : row.second) {
                             if (column.second.name == lineRemainder) {
-                                cout << "Your ticket ID is: " << column.second.ID << ". Your ticket price is: "
-                                     << column.second.price << "$" << ". Your seat is: " << column.first << " "
-                                     << row.first << ". Your flight number is: " << flight.first << ". Your flight date is: "
+                                cout << "Name is: " << column.second.name << ". Ticket ID is: "
+                                     << column.second.ID << ". Ticket price is: "
+                                     << column.second.price << "$" << ". Seat is: " << column.first << " "
+                                     << row.first << ". Flight number is: " << flight.first << ". Flight date is: "
                                      << date.first << endl;
                             }
                         }
@@ -187,10 +188,10 @@ public:
                         for (auto &row : flight.second) {
                             for (auto &column : row.second) {
                                 if (column.second.name != "") {
-                                    cout << "Your ticket ID is: " << column.second.ID << ". Your ticket price is: "
-                                         << column.second.price << "$" << ". Your seat is: " << column.first << " "
-                                         << row.first << ". Your flight number is: " << flight.first
-                                         << ". Your flight date is: "
+                                    cout << "Name is: " << column.second.name << ". Ticket ID is: "
+                                         << column.second.ID << ". Ticket price is: "
+                                         << column.second.price << "$" << ". Seat is: " << column.first << " "
+                                         << row.first << ". Flight number is: " << flight.first << ". Flight date is: "
                                          << date.first << endl;
                                 }
                             }
@@ -204,10 +205,10 @@ public:
                     for (auto &row: flight.second) {
                         for (auto &column: row.second) {
                             if (column.second.ID == stoi(optionType)) {
-                                cout << "Your ticket ID is: " << column.second.ID << ". Your ticket price is: "
-                                     << column.second.price << "$" << ". Your seat is: " << column.first << " "
-                                     << row.first << ". Your flight number is: " << flight.first
-                                     << ". Your flight date is: "
+                                cout << "Name is: " << column.second.name << ". Ticket ID is: "
+                                     << column.second.ID << ". Ticket price is: "
+                                     << column.second.price << "$" << ". Seat is: " << column.first << " "
+                                     << row.first << ". Flight number is: " << flight.first << ". Flight date is: "
                                      << date.first << endl;
                             }
                         }
