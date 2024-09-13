@@ -119,6 +119,7 @@ public:
             recordsMap[date][flightNumber][row][column].available = false;
             recordsMap[date][flightNumber][row][column].name = name;
             recordsMap[date][flightNumber][row][column].ID = previousID + 1;
+            previousID++;
             personalRecords[date][flightNumber][row][column] = recordsMap[date][flightNumber][row][column];
 
             cout << recordsMap[date][flightNumber][row][column].name << ", ticket booked successfully!" << endl;
