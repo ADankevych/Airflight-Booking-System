@@ -12,9 +12,12 @@ struct Record {
     int column;
     int price;
     bool available = true;
+    string name = "";
+    int ID;
 };
 
 map<string, map<string, map<int, map<int, Record>>>> recordsMap;
+int previousID = 0;
 
 class Parser {
 public:
@@ -75,10 +78,57 @@ public:
 
 
 class Passenger {
-public:
+private:
     string name;
-    map<string, map<string, map<int, map<int, Record>>> > personalRecords;
+    map<string, map<string, map<int, map<int, Record>>>> personalRecords;
 
+public:
+
+    explicit Passenger(string &name) {
+        this->name = name;
+    }
+
+    explicit Passenger(map<string, map<string, map<int, map<int, Record>>>> &personalRecords) {
+        this->personalRecords = personalRecords;
+    }
+
+    void setName(string &newName) {
+        this->name = newName;
+    }
+
+    void bookTicket(string &option) {
+        size_t position = option.find(' ');
+
+        string date = option.substr(0, position);
+        string lineRemainder = option.substr(position + 1);
+
+        position = lineRemainder.find(' ');
+        string flightNumber = lineRemainder.substr(0, position);
+        lineRemainder = lineRemainder.substr(position + 1);
+
+        position = lineRemainder.find(' ');
+        string rowColumn = lineRemainder.substr(0, position);
+        string name = lineRemainder.substr(position + 1, lineRemainder.size() - 1);
+        setName(name);
+
+        char c = rowColumn[rowColumn.size() - 1];
+        int row = c - 'A' + 1;
+        int column = stoi(rowColumn.substr(0, rowColumn.size() - 2 - name.size()));
+
+        if (recordsMap[date][flightNumber][row][column].available) {
+            recordsMap[date][flightNumber][row][column].available = false;
+            recordsMap[date][flightNumber][row][column].name = name;
+            recordsMap[date][flightNumber][row][column].ID = previousID + 1;
+            personalRecords[date][flightNumber][row][column] = recordsMap[date][flightNumber][row][column];
+
+            cout << recordsMap[date][flightNumber][row][column].name << ", ticket booked successfully!" << endl;
+            cout << "Your ticket ID is: " << recordsMap[date][flightNumber][row][column].ID << ". Your ticket price is: "
+            << recordsMap[date][flightNumber][row][column].price << "$" << ". Your seat is: " << column << " "
+            << row << ". Your flight number is: " << flightNumber << ". Your flight date is: " << date << endl;
+        } else {
+            cout << "The seat is already booked!" << endl;
+        }
+    }
 
 };
 
@@ -93,110 +143,15 @@ public:
         for (const auto &row : recordsMap[date][flightNumber]) {
             for (const auto &column : row.second) {
                 if (column.second.available) {
-                    char c = 'A' + row.first;
+                    char c = 'A' - 1 + row.first;
                     cout << column.first << c << " " << column.second.price << "$ available" << endl;
                 }
             }
         }
     }
 
-
 };
 
-/*
-class Record {
-public:
-    //string date;
-    //string flightNumber;
-    map<string, map<string, map<int, map<int, Record>>>> rowColumnPrice;
-};
-
-Record record;
-
-class Parser {
-public:
-    static void parseRecord(){
-        const char *path = "/Users/anastasia_d/CLionProjects/Airflight-Booking-System/records";
-        fstream records(path);
-        if (!records.is_open()) {
-            cout << "Could not open file." << endl;
-            return;
-        }
-
-        string line;
-
-        while (getline(records, line)) {
-            size_t position;
-
-            position = line.find(' ');
-            //record.date = line.substr(0, position);
-            string date = line.substr(0, position);
-            string lineRemainder = line.substr(position + 1);
-
-            position = lineRemainder.find(' ');
-            //record.flightNumber = lineRemainder.substr(0, position);
-            string flightNumber = lineRemainder.substr(0, position);
-            lineRemainder = lineRemainder.substr(position + 1);
-
-            position = lineRemainder.find(' ');
-            int row = stoi(lineRemainder.substr(0, position));
-            lineRemainder = lineRemainder.substr(position + 1);
-
-            while ((position = lineRemainder.find(' ')) != string::npos) {
-                string currentLine = lineRemainder.substr(0, position);
-                size_t dash = currentLine.find('-');
-                int startColumn = stoi(currentLine.substr(0, dash));
-                int endColumn = stoi(currentLine.substr(dash + 1));
-
-                lineRemainder = lineRemainder.substr(position + 1);
-
-                position = lineRemainder.find(' ');
-                string dollar = lineRemainder.substr(0, position);
-                int price = stoi(dollar.substr(0, dollar.size() - 1));
-
-                lineRemainder = lineRemainder.substr(position + 1);
-
-                for (int i = startColumn; i <= endColumn; ++i) {
-                    record.rowColumnPrice [date][flightNumber][row][i] = price;
-                    record.rowColumnPrice [date][flightNumber][row][i] = price;
-                    cout << "row " << row << " column " << i << " price " << price << "\n";
-                }
-            }
-        }
-    }
-};
-
-class Passenger : public Record {
-public:
-    string name;
-    map<int, Record> personalRecords;
-
-
-    void bookTicket(string &option) {
-        size_t position = option.find(' ');
-        string data = option.substr(0, position);
-        string flightNumber = option.substr(position + 1, option.size() - 1);
-
-        cout << flightNumber << endl;
-        cout << data << endl;
-
-
-    }
-};
-
-map <int, Passenger> passengers; // int - ID
-
-class Airflight {
-public:
-    static void checkAvailability(string &option) {
-        size_t position = option.find(' ');
-        string data = option.substr(0, position);
-        string flightNumber = option.substr(position + 1, option.size() - 1);
-
-
-
-    }
-};*/
 
 int main() {
     cout << "Welcome to air-flight booking system!" << endl
@@ -222,10 +177,10 @@ int main() {
         functionOption = option.substr(position + 1, option.size() - 1);
 
         if (newOption == "check") {
-            cout << "Enter the seat number: ";
             Airflight::checkAvailability(functionOption);
         } else if (newOption == "book") {
-            cout << "Enter the passenger name: ";
+            Passenger passenger(functionOption);
+            passenger.bookTicket(functionOption);
         } else if (newOption == "return") {
             cout << "Enter the passenger name: ";
         } else if (newOption == "view") {
